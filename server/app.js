@@ -1,5 +1,5 @@
 import express from "express";
-import test from "./src/routers/test.route.js";
+import health from "./src/routers/health.route.js";
 
 const app = express();
 
@@ -7,6 +7,6 @@ app.get("/", (req, res) => {
   res.send("Server running");
 });
 
-app.use("/api", test);
+app.use("/api", health);
 
 export default app;
