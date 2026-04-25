@@ -1,9 +1,14 @@
 import bcrypt from "bcryptjs";
-import User from "../models/User";
+import User from "../models/User.js";
+import jwt from "jsonwebtoken";
+
+const generateToken = (id) => {
+  return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: "7d" });
+};
 
 export const login = async (req, res, next) => {
   try {
-    const { email, password } = req.bdoy;
+    const { email, password } = req.body;
 
     if (!email || !password) {
       const err = new Error("Email and password are required");
@@ -28,6 +33,7 @@ export const login = async (req, res, next) => {
     res.status(200).json({
       success: true,
       message: "Login successful",
+      token: generateToken(user._id),
       user: {
         id: user._id,
         email: user.email,
