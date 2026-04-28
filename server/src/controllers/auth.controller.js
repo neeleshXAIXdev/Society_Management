@@ -1,10 +1,6 @@
-import bcrypt from "bcryptjs";
 import User from "../models/User.js";
-import jwt from "jsonwebtoken";
-
-const generateToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: "7d" });
-};
+import { generateToken } from "../lib/generateToken.js";
+import { hashedPassword, matchPassword } from "../lib/password.js";
 
 export const login = async (req, res, next) => {
   try {
@@ -17,13 +13,14 @@ export const login = async (req, res, next) => {
     }
 
     const user = await User.findOne({ email });
+    const userRole = await User.findOne({ email }).populate("role");
     if (!user) {
       const err = new Error("Invalid credentials");
       err.statusCode = 401;
       return next(err);
     }
 
-    const isMatch = await bcrypt.compare(password, user.password);
+    const isMatch = matchPassword(password, user.password);
     if (!isMatch) {
       const err = new Error("Invalid credentials");
       err.statusCode = 401;
@@ -37,10 +34,49 @@ export const login = async (req, res, next) => {
       user: {
         id: user._id,
         email: user.email,
-        role: user.role,
+        role: userRole.role,
       },
     });
   } catch (error) {
+    next(error);
+  }
+};
+
+export const createUser = async (req, res, next) => {
+  try {
+    const { name, email, password, role, flat } = req.body;
+
+    if (!name || !email || !password) {
+      return res.status(400).json({
+        message: "Name, email and password are required",
+      });
+    }
+
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ message: "User already exists" });
+    }
+
+    const userData = {
+      name,
+      email,
+      password: hashedPassword(password),
+      role,
+    };
+
+    if (flat) {
+      userData.flat = flat;
+    }
+
+    const user = await User.create(userData);
+
+    res.status(201).json({
+      success: true,
+      message: "User created successfully",
+      user,
+    });
+  } catch (error) {
+    console.log("CREATE USER ERROR:", error);
     next(error);
   }
 };

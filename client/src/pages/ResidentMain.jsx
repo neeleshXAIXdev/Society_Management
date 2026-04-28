@@ -1,13 +1,17 @@
-import { Home, User, FileText } from "lucide-react";
+import { Home } from "lucide-react";
 import MainLayout from "../layout/MainLayout";
 import Sidebar from "../components/Sidebar";
 import { Outlet } from "react-router-dom";
 
-const AdminMain = () => {
+const ResidentMain = () => {
   const menuItems = [
-    { id: 1, label: "Dashboard", icon: Home, path: "/admin", isParent: true },
-    { id: 2, label: "Create User", icon: User, path: "/admin/create-user" },
-    { id: 3, label: "Complaints", icon: FileText, path: "/admin/complaints" },
+    {
+      id: 1,
+      label: "Dashboard",
+      icon: Home,
+      path: "/resident",
+      isParent: true,
+    },
   ];
   return (
     <MainLayout>
@@ -21,4 +25,4 @@ const AdminMain = () => {
   );
 };
 
-export default AdminMain;
+export default ResidentMain;

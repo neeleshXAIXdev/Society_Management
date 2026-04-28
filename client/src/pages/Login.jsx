@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import MainLayout from "../layout/MainLayout";
 import { motion } from "framer-motion";
 import API from "../api/axios.js";
@@ -14,6 +14,26 @@ const Login = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
 
+  const { auth } = useAuth();
+
+  useEffect(() => {
+    if (auth.role) {
+      switch (auth.role) {
+        case "admin":
+          navigate("/admin");
+          break;
+        case "resident":
+          navigate("/resident");
+          break;
+        case "guard":
+          navigate("/guard");
+          break;
+        default:
+          navigate("/");
+      }
+    }
+  }, [auth.role]);
+
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -21,43 +41,12 @@ const Login = () => {
     });
   };
 
-  // ✅ safer redirect using switch
-  const redirectUser = (role) => {
-    switch (role) {
-      case "admin":
-        navigate("/admin");
-        break;
-      case "resident":
-        navigate("/resident-main");
-        break;
-      case "security_guard":
-        navigate("/security-main");
-        break;
-      default:
-        navigate("/");
-    }
-  };
-
   const handleLogin = async (e) => {
     e.preventDefault();
 
     try {
       const res = await API.post("v1/auth/login", formData);
-
       login(res.data);
-
-      // ✅ map role ID to role name
-      const roleMap = {
-        "69e9c82ddb1aa37d2bd79669": "admin",
-        "69e9c82ddb1aa37d2bd79670": "resident",
-        "69e9c82ddb1aa37d2bd79671": "security_guard",
-      };
-
-      const roleId = res.data.user.role;
-      const role = roleMap[roleId];
-
-      // ✅ fallback safety
-      redirectUser(role || "guest");
     } catch (err) {
       console.error(err);
       alert("Invalid credentials");

@@ -2,13 +2,15 @@ import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from "./pages/Login";
 import Home from "./pages/Home";
-import ResidentDashboard from "./pages/ResidentDashboard";
-import GuardDashboard from "./pages/GuardDashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
 import CreateUser from "./pages/admin/CreateUser";
 import Complaints from "./pages/admin/Complaints";
 import AdminMain from "./pages/AdminMain";
-import Dashboard from "./pages/admin/Dashboard";
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import ResidentDashboard from "./pages/resident/ResidentDashboard";
+import ResidentMain from "./pages/ResidentMain";
+import GuardMain from "./pages/GuardMain";
+import GuardDashboard from "./pages/guard/GuardDashboard";
 
 function App() {
   return (
@@ -25,28 +27,32 @@ function App() {
             </ProtectedRoute>
           }
         >
-          <Route index element={<Dashboard />} />
+          <Route index element={<AdminDashboard />} />
           <Route path="create-user" element={<CreateUser />} />
           <Route path="complaints" element={<Complaints />} />
         </Route>
 
-        {/* <Route
-          path="/resident-dashboard"
+        <Route
+          path="/resident"
           element={
             <ProtectedRoute allowedRoles={["resident"]}>
-              <ResidentDashboard />
+              <ResidentMain />
             </ProtectedRoute>
           }
-        />
+        >
+          <Route index element={<ResidentDashboard />} />
+        </Route>
 
         <Route
-          path="/security-dashboard"
+          path="/guard"
           element={
-            <ProtectedRoute allowedRoles={["security_guard"]}>
-              <GuardDashboard />
+            <ProtectedRoute allowedRoles={["guard"]}>
+              <GuardMain />
             </ProtectedRoute>
           }
-        /> */}
+        >
+          <Route index element={<GuardDashboard />} />
+        </Route>
       </Routes>
     </BrowserRouter>
   );

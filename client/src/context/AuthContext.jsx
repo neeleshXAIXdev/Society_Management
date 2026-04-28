@@ -8,7 +8,6 @@ export const AuthProvider = ({ children }) => {
     role: null,
   });
 
-  // ✅ Load from localStorage on refresh
   useEffect(() => {
     const token = localStorage.getItem("token");
     const role = localStorage.getItem("role");
@@ -18,16 +17,9 @@ export const AuthProvider = ({ children }) => {
     }
   }, []);
 
-  // ✅ FIXED LOGIN
   const login = (data) => {
-    const roleMap = {
-      "69e9c82ddb1aa37d2bd79669": "admin",
-      "69e9c82ddb1aa37d2bd79670": "resident",
-      "69e9c82ddb1aa37d2bd79671": "security_guard",
-    };
-
     const token = data.token;
-    const role = roleMap[data.user.role];
+    const role = data.user.role.role;
 
     localStorage.setItem("token", token);
     localStorage.setItem("role", role);

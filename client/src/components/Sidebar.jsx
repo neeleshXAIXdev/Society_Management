@@ -11,7 +11,7 @@ const Sidebar = ({ menuItems }) => {
             <NavLink
               key={item.id}
               to={item.path}
-              end={item.path === "/admin"}
+              end={item.isParent || false}
               className={({ isActive }) =>
                 `flex items-center gap-1 p-1.5 rounded cursor-pointer
                  hover:bg-gray-700 transition

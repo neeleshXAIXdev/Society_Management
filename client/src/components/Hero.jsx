@@ -17,9 +17,9 @@ const Hero = () => {
     if (role === "admin") {
       navigate("/admin");
     } else if (role === "resident") {
-      navigate("/resident-dashboard");
+      navigate("/resident");
     } else if (role === "guard") {
-      navigate("/guard-dashboard");
+      navigate("/guard");
     } else {
       navigate("/login"); // fallback
     }
